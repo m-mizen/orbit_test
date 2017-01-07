@@ -136,13 +136,22 @@ table {
     border-spacing: 0;
 }
 
+
+/* Custom styles */
+
 canvas {
     display: block;
     margin: auto;
 }
 
+html,
 body {
     position: relative;
+    font-size: 18px;
+    font-family: 'Source Sans Pro', sans-serif;
+    line-height: normal;
+    background: #fefefe;
+    color: #333;
 }
 
 #grid {
@@ -153,4 +162,47 @@ body {
     bottom: 0;
     border-top: 1px solid #fff;
     border-right: 1px solid #fff;
+}
+
+#time {
+    text-align: center;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+#time::before {
+    content: 'Time: ';
+}
+
+.docs {
+    margin: 2.5rem auto 4rem;
+    padding: 0 1rem;
+    max-width: 45rem;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.125rem 0;
+    border-top: 0.125rem solid #333;
+    border-bottom: 0.125rem solid #333;
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+ul {
+    padding-left: 1.8rem;
+}
+
+ul li {
+    list-style-type: disc;
+    list-style-position: outside;
+    margin-bottom: 0.125rem;
 }
