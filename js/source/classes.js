@@ -3,7 +3,7 @@ class star {
      * Class for stars
      */
     constructor() {
-        this.display = new createjs.Shape();
+        this.circle = new createjs.Shape();
 
         this.system = new createjs.Container();
 
@@ -19,9 +19,9 @@ class star {
         this.system.x = thisStage.canvas.width / 2;
         this.system.y = (thisStage.canvas.height / 2);
 
-        this.display.graphics.beginFill("yellow").drawCircle(this.position.x, this.position.y, this.size);
+        this.circle.graphics.beginFill("yellow").drawCircle(this.position.x, this.position.y, this.size);
         thisStage.addChild(this.system);
-        this.system.addChild(this.display);
+        this.system.addChild(this.circle);
     }
 }
 
@@ -31,7 +31,7 @@ class oribitalBody {
      */
     constructor(info, orbitInfo) {
 
-        this.display = new createjs.Shape(); // Planet circle
+        this.circle = new createjs.Shape(); // Planet circle
         this.displayOrbit = new createjs.Shape(); // Orbit ellipse
 
         this.size = 10; // default size
@@ -56,7 +56,7 @@ class oribitalBody {
         this.updatePosition(window.t);
 
         // Draw Planet
-        this.display.graphics.beginFill(this.colour).drawCircle(this.currentLocation.x, this.currentLocation.y, this.size)
+        this.circle.graphics.beginFill(this.colour).drawCircle(this.currentLocation.x, this.currentLocation.y, this.size)
 
         // Calc orbit ellipse
         let rmax = this.orbit.a;
@@ -73,7 +73,7 @@ class oribitalBody {
         );
 
         // Add shapes to parent
-        thisContainer.addChild(this.display);
+        thisContainer.addChild(this.circle);
         thisContainer.addChild(this.displayOrbit);
 
     }
