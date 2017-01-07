@@ -1,0 +1,25 @@
+{
+    "systemName": "Test system",
+    "star": {
+        "type": "blue giant"
+    },
+    "planets": [{
+            "name": "test planet 1",
+            "colour": "red",
+            "size": 8,
+            "orbit": {
+                "a": 200,
+                "e": 0.1
+            }
+        },
+        {
+            "name": "test planet 2",
+            "colour": "blue",
+            "size": 5,
+            "orbit": {
+                "a": 400,
+                "e": 0.01
+            }
+        }
+    ]
+}
