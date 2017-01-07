@@ -1,25 +1,31 @@
 {
     "systemName": "Test system",
     "star": {
-        "type": "blue giant"
+        "colour": "Yellow",
+        "mass": "1989000000000000000000000000000000",
+        "size": "1391400"
     },
     "planets": [{
-            "name": "test planet 1",
-            "colour": "red",
-            "size": 8,
-            "orbit": {
-                "a": 200,
-                "e": 0.1
-            }
-        },
-        {
-            "name": "test planet 2",
-            "colour": "blue",
-            "size": 5,
-            "orbit": {
-                "a": 400,
-                "e": 0.01
-            }
+        "name": "Earth",
+        "mass": "5972000000000000000000000000",
+        "colour": "blue",
+        "size": "12742",
+        "orbit": {
+            "a": 1,
+            "e": 0.0167086,
+            "w": 0,
+            "start": 0
         }
-    ]
+    }, {
+        "name": "Mars",
+        "mass": "5972000000000000000000000000",
+        "colour": "red",
+        "size": "8742",
+        "orbit": {
+            "a": 2,
+            "e": 0.0167086,
+            "w": 0,
+            "start": 0
+        }
+    }]
 }
