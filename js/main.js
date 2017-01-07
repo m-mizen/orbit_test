@@ -26,6 +26,7 @@ var systemInfo = {
 };
 var t, timeDisplay;
 
+
 function init() {
     t = 0;
     timeDisplay = document.getElementById("time");
