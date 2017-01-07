@@ -106,15 +106,15 @@ function init() {
             mouseDownLocation = false;
         })
 
-        gameCanvas.addEventListener("mousewheel", function(event) {
-            event.preventDefault();
-            if (event.wheelDeltaY > 40 || event.wheelDeltaY < 40) {
-                if (event.wheelDeltaY > 0) {
-                    Reality.scale = Reality.scale * 2;
-                } else {
-                    Reality.scale = Reality.scale / 2;
-                }
-            }
-        });
+        // gameCanvas.addEventListener("mousewheel", function(event) {
+        //     event.preventDefault();
+        //     if (event.wheelDeltaY > 40 || event.wheelDeltaY < 40) {
+        //         if (event.wheelDeltaY > 0) {
+        //             Reality.scale = Reality.scale * 2;
+        //         } else {
+        //             Reality.scale = Reality.scale / 2;
+        //         }
+        //     }
+        // });
     });
 }
