@@ -24,15 +24,19 @@ var systemInfo = {
         }
     ]
 };
+
+// Time variables
 var t, timeDisplay;
 
-
+// Init function
 function init() {
     t = 0;
     timeDisplay = document.getElementById("time");
 
+    // Create stage
     var stage = new createjs.Stage("gameCanvas");
 
+    // Add background to stage
     var bg = new createjs.Shape();
     stage.addChild(bg);
     bg.x = 0;
@@ -40,9 +44,11 @@ function init() {
     bg.graphics.beginFill("black").drawRect(0, 0, stage.canvas.width, stage.canvas.height);
 
 
+    // Create sun
     var sun = new star();
     sun.addToStage(stage);
 
+    // Create planets
     var planets = [];
     for (let i = 0; i < systemInfo.planets.length; i++) {
         let thisPlanetInfo = systemInfo.planets[i];
@@ -56,15 +62,19 @@ function init() {
         planets[i].checkValues();
     }
 
+
+    // Start update loop
     createjs.Ticker.addEventListener("tick", handleTick);
 
-    scaleSystem = 1;
+    var scaleSystem = 1;
 
     function handleTick() {
+        // Add to time variable
         t++;
+        // update time display
         timeDisplay.innerHTML = t;
 
-
+        // Zoom out on page
         scaleSystem = 1 - ((t % 80) / 100);
 
         sun.system.scaleX = scaleSystem
