@@ -33,12 +33,14 @@ function init() {
         bg.y = 0;
         bg.graphics.beginFill("black").drawRect(0, 0, stage.canvas.width, stage.canvas.height);
 
-        var uiLayer;
         var systemContainer = new createjs.Container();
         stage.addChild(systemContainer);
         systemContainer.x = Reality.width / 2;
         systemContainer.y = Reality.height / 2;
+        systemContainer.scaleX = systemContainer.scaleY = Reality.scale;
 
+        uiLayer = new createjs.Container();
+        stage.addChild(uiLayer);
 
         // Create sun
         var sun = new Star(systemInfo.star, systemContainer);

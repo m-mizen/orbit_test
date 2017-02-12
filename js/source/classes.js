@@ -44,26 +44,26 @@ class SpacialBody {
 
         this.parent.addChild(this.influence);
 
+        this.bodyCircle = new createjs.Shape();
+
+        this.bodyCircle.x = (this.position.x);
+        this.bodyCircle.y = (this.position.y);
+        this.bodyCircle.graphics.beginFill(this.attributes.colour).drawCircle(
+            ((-this.position.x)),
+            ((-this.position.y)),
+            this.attributes.size
+        );
+        this.parent.addChild(this.bodyCircle);
+
+        var globLocation = this.bodyCircle.localToGlobal(0, 0);
 
         this.uiCircle = new createjs.Shape();
         this.uiCircle.graphics.beginStroke("white").drawCircle(
-            ((-this.position.x) * Reality.scale),
-            ((-this.position.y) * Reality.scale),
+            globLocation.x,
+            globLocation.y,
             this.uiCircleSize
         );
-
-        this.parent.addChild(this.uiCircle);
-
-        this.bodyCircle = new createjs.Shape();
-
-        this.bodyCircle.x = (this.position.x * Reality.scale);
-        this.bodyCircle.y = (this.position.y * Reality.scale);
-        this.bodyCircle.graphics.beginFill(this.attributes.colour).drawCircle(
-            ((-this.position.x) * Reality.scale),
-            ((-this.position.y) * Reality.scale),
-            Reality.scale * this.attributes.size
-        );
-        this.parent.addChild(this.bodyCircle);
+        uiLayer.addChild(this.uiCircle);
 
     }
 
@@ -126,26 +126,28 @@ class OrbitalBody extends SpacialBody {
         this.updateOrbit(time);
 
         this.influence = new createjs.Container();
-        this.influence.x = this.position.x * Reality.scale;
-        this.influence.y = this.position.y * Reality.scale;
+        this.influence.x = this.position.x;
+        this.influence.y = this.position.y;
+
+        this.bodyCircle = new createjs.Shape();
+        this.bodyCircle.x = (this.position.x);
+        this.bodyCircle.y = (this.position.y);
+        this.bodyCircle.graphics.beginFill(this.attributes.colour).drawCircle(
+            ((this.position.x)),
+            ((this.position.y)),
+            this.attributes.size
+        );
+        this.parent.addChild(this.bodyCircle);
+
+        var globLocation = this.bodyCircle.localToGlobal(0, 0);
 
         this.uiCircle = new createjs.Shape();
         this.uiCircle.graphics.beginStroke("white").drawCircle(
-            ((this.position.x) * Reality.scale),
-            ((this.position.y) * Reality.scale),
+            globLocation.x,
+            globLocation.y,
             this.uiCircleSize
         );
-        this.parent.addChild(this.uiCircle);
-
-        this.bodyCircle = new createjs.Shape();
-        this.bodyCircle.x = (this.position.x * Reality.scale);
-        this.bodyCircle.y = (this.position.y * Reality.scale);
-        this.bodyCircle.graphics.beginFill(this.attributes.colour).drawCircle(
-            ((this.position.x) * Reality.scale),
-            ((this.position.y) * Reality.scale),
-            Reality.scale * this.attributes.size
-        );
-        this.parent.addChild(this.bodyCircle);
+        uiLayer.addChild(this.uiCircle);
 
         this.orbitPath = new createjs.Shape();
         this.orbitPath.graphics.beginStroke("white").drawCircle(0, 0, this.orbitinfo.a * Reality.scale);
@@ -157,9 +159,8 @@ class OrbitalBody extends SpacialBody {
         // Update the body. Every time something interacts with the body that is dependant upon time this function is called.
         this.updateOrbit(time);
 
-        this.influence.x = this.uiCircle.x = this.bodyCircle.x = this.position.x * Reality.scale - this.orbitinfo.a * Reality.scale;
-        // this.influence.x = this.uiCircle.x = this.bodyCircle.x = this.position.x * Reality.scale;
-        this.influence.y = this.uiCircle.y = this.bodyCircle.y = this.position.y * Reality.scale;
+        this.influence.x = this.uiCircle.x = this.bodyCircle.x = this.position.x - this.orbitinfo.a;
+        this.influence.y = this.uiCircle.y = this.bodyCircle.y = this.position.y;
 
     }
 
