@@ -1,6 +1,6 @@
 # Obital mechanics
 
-This is the prototype for an "astrogator" game written in JS that run on chrome.
+This is the prototype for an "astrogator" game written in JS.
 This is developed for chrome using newer JS features that aren't supported in older browsers.
 
 ## Things to do:

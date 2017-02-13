@@ -20,14 +20,36 @@ var SpacialBody = function () {
     function SpacialBody(options, parent) {
         _classCallCheck(this, SpacialBody);
 
+        // Parent object
         this.parent = parent;
 
+        // Radius of the body
         this.radius = options.radius || 1;
+
+        // Gravitational constant
+        this.G = 6.67408 * Math.pow(10, -11);
+
+        // Mass of the body
+        this.Mass = options.Mass;
+
+        // Color of the body
+        this.color = options.color || '#ffffff';
+
+        this.pos = options.pos || false;
     }
 
     _createClass(SpacialBody, [{
         key: 'draw',
-        value: function draw() {}
+        value: function draw(target) {
+            target = target || this.parent;
+
+            target.fillRect(thisX, thisY, this.radius, this.radius);
+
+            target.beginPath();
+            target.arc(thisX, thisY, radius, 0, 2 * Math.PI, false);
+            target.fillStyle = this.color;
+            target.fill();
+        }
     }]);
 
     return SpacialBody;
@@ -51,40 +73,124 @@ var OrbitalBody = function (_SpacialBody2) {
     function OrbitalBody(options, parent) {
         _classCallCheck(this, OrbitalBody);
 
-        /* Orbital information from options */
+        /**
+         * Orbital information from options
+         * a = semimajor axis
+         * e = eccentricity
+         * t0 = start time
+         * M0 = Mean anomaly at time t0
+         * i = inclination
+         * 
+         */
         var _this2 = _possibleConstructorReturn(this, (OrbitalBody.__proto__ || Object.getPrototypeOf(OrbitalBody)).call(this, options, parent));
 
-        _this2.orbit = {
-            a: options.orbit.a,
-            e: options.orbit.e,
-            period: options.orbit.period,
-            offsetAngle: options.orbit.offsetAngle,
-            b: options.orbit.a * Math.sqrt(1 - Math.pow(options.orbit.e, 2)),
-            W: options.orbit.a * 2
-        };
+        _this2.orbit = options.orbit; // Stores all of the orbit information
 
-        _this2.orbitPos = {
-            theta: _this2.orbit.offsetAngle,
-            r: _this2.orbit.a
-        };
+        _this2.orbit.b = _this2.orbit.a * Math.sqrt(1 - Math.pow(_this2.orbit.e, 2)); // Semiminor axis
 
-        _this2.color = options.color || '#ffffff';
+        _this2.orbit.rp = _this2.orbit.a * (1 - _this2.orbit.e); // Closest point
+        _this2.orbit.ra = _this2.orbit.a * (1 + _this2.orbit.e); // Furthest point
+
+        _this2.mew = _this2.G * _this2.Mass;
+
+        // orbitPos caches the position of the object. Prevents re-calculating.
+        _this2.orbitPos = {};
+
+        _this2.orbitPos.theta = _this2.eccentricAnomaly(0);
+        _this2.orbitPos.r = _this2.distanceFromCenter(_this2.orbitPos.theta);
+
+        var cartesianCoOrds = (0, _conversions.polarToCartesian)(_this2.orbitPos.r, _this2.orbitPos.theta);
+
+        _this2.orbitPos.x = cartesianCoOrds.X;
+        _this2.orbitPos.y = cartesianCoOrds.Y;
 
         return _this2;
     }
 
     _createClass(OrbitalBody, [{
+        key: 'meanAnomaly',
+
+
+        /*
+        ----    ----    ----    ----
+        Mean annomaly, M
+        ----    ----    ----    ----
+        The mean annomaly of the orbit is the angle of the "effective circular orbit" for a given location: https://en.wikipedia.org/wiki/Mean_anomaly
+          mew = G * Mass
+        n = mew / a**3
+        M = M0 + n( t - t0 )
+          G = gravitational constant
+        Mass = Mass of the object
+        a = semimajor axis
+        t = current time
+        t0 = start time
+        n = average rate of sweep for the orbit
+          */
+        value: function meanAnomaly(t) {
+            var n = this.mew / Math.pow(this.orbit.a, 3);
+            return n * (t - this.orbit.t0);
+        }
+
+        /*
+        ----    ----    ----    ----
+        Eccentric annomaly, E
+        ----    ----    ----    ----
+          The Eccentric annomaly of a body is the angle from the center of the orbit to the current position.
+          M = E - e sin(E)
+        There is no solution to this function. To approximate it I am using this equation:
+        E(t) = M(t) + ( e - (e**3 /8) ) * sin( M(t) ) + ( e**2 / 2 ) * sin( 2 * M(t) ) + ( (3/8) * (e**3) ) * sin(3 * M(t));
+          M(t) is calculated by the meanAnomaly(t) function
+        
+        */
+
+    }, {
+        key: 'eccentricAnomaly',
+        value: function eccentricAnomaly(t) {
+            var M = this.meanAnomaly(t);
+            var e = this.orbit.e;
+
+            var E = M + (e - 1 / 8 * Math.pow(e, 3)) * Math.sin(M) + 1 / 2 * Math.pow(e, 2) * Math.sin(2 * M) + 3 / 8 * Math.pow(e, 3) * Math.sin(3 * M);
+            return E;
+        }
+
+        /*
+        ----    ----    ----    ----
+        Distance from centre, r
+        ----    ----    ----    ----
+          r = p / (1 + e cost(theta))
+          theta = Eccentric annomaly
+        p  = average radius of the orbit
+        
+        As theta is dependant on time, this function can be used to calculate the distance from the orbited body as a function of time
+        */
+
+    }, {
+        key: 'distanceFromCenter',
+        value: function distanceFromCenter(theta) {
+            var a = this.orbit.a;
+            var e = this.orbit.e;
+            var p = a * (1 - Math.pow(e, 2));
+
+            return p / (1 + e * Math.cos(theta));
+        }
+
+        /**
+         * Refresh the position of the orbit
+         */
+
+    }, {
         key: 'orbitPosition',
-        value: function orbitPosition(t) {
-            var currentAngle = t % this.orbit.period / this.orbit.period * (2 * Math.PI);
-            var distance = this.orbit.a * this.orbit.b / Math.sqrt(Math.pow(this.orbit.b * Math.cos(currentAngle), 2) + Math.pow(this.orbit.a * Math.sin(currentAngle), 2));
+        value: function orbitPosition(time) {
+            // polar
+            this.orbitPos.theta = this.eccentricAnomaly(time);
+            this.orbitPos.r = this.distanceFromCenter(this.orbitPos.theta);
 
-            console.log(currentAngle, Math.pow(this.orbit.b * Math.cos(currentAngle), 2) + Math.pow(this.orbit.a * Math.sin(currentAngle), 2));
+            // cartesian
+            var cartesianCoOrds = (0, _conversions.polarToCartesian)(this.orbitPos.r, this.orbitPos.theta);
+            this.orbitPos.x = cartesianCoOrds.X;
+            this.orbitPos.y = cartesianCoOrds.Y;
 
-            this.orbitPos = {
-                theta: currentAngle + this.orbit.offsetAngle,
-                r: distance
-            };
+            return this.orbitPos;
         }
     }, {
         key: 'draw',
@@ -100,6 +206,9 @@ var OrbitalBody = function (_SpacialBody2) {
             target.strokeStyle = this.color;
             target.beginPath();
             target.ellipse(300, 300, this.orbit.a * 100, this.orbit.b * 100, this.orbit.offsetAngle, 0, 2 * Math.PI);
+            target.stroke();
+            target.lineWidth = 1;
+            target.strokeStyle = this.color;
             target.stroke();
         }
     }]);
